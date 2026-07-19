@@ -10,7 +10,6 @@ The platform features a modern, responsive, glassmorphic dark-theme UI designed 
 
 ### 1. Secure Authentication Login
 Provides step-1 (TOTP) and step-2 (MPIN) security integrations aligned with SEBI's guidelines.
-![Secure Login Screen](assets/login.png)
 
 ### 2. Main Trading Control Center
 Houses manual order forms (limit/market/marketable limit), live system logs streamed via Socket.IO, active positions, and real-time P&L cards.
