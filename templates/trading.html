@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | Neo Algo{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/trading.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <!-- Row 1: Metrics summary cards -->
+    <section class="metrics-row">
+        <div class="metric-card glass">
+            <div class="metric-icon margin-icon"><i class="fa-solid fa-wallet"></i></div>
+            <div class="metric-info">
+                <h3>Cash Balance</h3>
+                <span class="metric-value" id="cash-margin-val">₹0.00</span>
+            </div>
+        </div>
+        
+        <div class="metric-card glass">
+            <div class="metric-icon pnl-icon"><i class="fa-solid fa-chart-line"></i></div>
+            <div class="metric-info">
+                <h3>Total Account P&L</h3>
+                <span class="metric-value" id="pnl-total-val">₹0.00</span>
+                <span class="pnl-sub-breakdown" id="pnl-breakdown-sub">Realized: ₹0.00 | Unrealized: ₹0.00</span>
+            </div>
+        </div>
+        
+        <div class="metric-card glass" id="circuit-breaker-card">
+            <div class="metric-icon risk-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div class="metric-info">
+                <h3>Circuit Breaker</h3>
+                <span class="metric-value status-normal" id="breaker-state-text">NORMAL</span>
+                <span class="pnl-sub-breakdown" id="breaker-remaining-text">Limit: ₹10,000.00 | Remaining: ₹10,000.00</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Row 2: Strategies Control and Manual desk -->
+    <div class="control-split">
+        <!-- Strategy Setup panel -->
+        <section class="panel glass">
+            <div class="panel-header">
+                <h2><i class="fa-solid fa-sliders"></i> Strategy Configuration Launcher</h2>
+            </div>
+            <div class="panel-body">
+                <form id="strategy-launch-form" class="control-form">
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="select-strategy-cls">Target Algorithm</label>
+                            <select id="select-strategy-cls" required>
+                                <option value="" disabled selected>Select Strategy</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label for="algo-symbol">Trading Symbol</label>
+                            <input type="text" id="algo-symbol" required placeholder="e.g. NIFTY26JUN26C23500" autocomplete="off">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="algo-lot-size">Lot Size</label>
+                            <input type="number" id="algo-lot-size" required min="1" value="1">
+                        </div>
+                        <div class="form-field">
+                            <label for="algo-target-pnl">Target LTP Basis (Optional)</label>
+                            <input type="number" id="algo-target-pnl" min="0" step="0.05" placeholder="e.g. 154.20">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="algo-stop-loss">Stop-Loss (%)</label>
+                            <input type="number" id="algo-stop-loss" required min="0.1" max="100" step="0.1" value="1.0">
+                        </div>
+                        <div class="form-field">
+                            <label for="algo-take-profit">Take-Profit (%)</label>
+                            <input type="number" id="algo-take-profit" required min="0.1" max="100" step="0.1" value="2.0">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fa-solid fa-play"></i> Initialize Strategy
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Manual Trading Desk panel -->
+        <section class="panel glass">
+            <div class="panel-header">
+                <h2><i class="fa-solid fa-keyboard"></i> Direct Trading Desk</h2>
+            </div>
+            <div class="panel-body">
+                <form id="manual-order-form" class="control-form">
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="manual-symbol">Symbol</label>
+                            <input type="text" id="manual-symbol" required placeholder="e.g. NIFTY26JUN26P23500" autocomplete="off">
+                        </div>
+                        <div class="form-field">
+                            <label for="manual-qty">Lots Multiplier (Qty)</label>
+                            <input type="number" id="manual-qty" required min="1" value="1">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="manual-price">LTP Reference (₹)</label>
+                            <input type="number" id="manual-price" required min="0.05" step="0.05" placeholder="e.g. 182.40">
+                        </div>
+                        <div class="form-field">
+                            <label for="manual-order-type">Shield Execution</label>
+                            <select id="manual-order-type">
+                                <option value="MARKETABLE_LIMIT">Marketable Limit (Slippage Shield)</option>
+                                <option value="LIMIT">Standard Limit</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="manual-action-row">
+                        <button type="button" class="btn btn-success flex-grow" id="btn-manual-buy">
+                            <i class="fa-solid fa-circle-arrow-up"></i> BUY (LONG)
+                        </button>
+                        <button type="button" class="btn btn-danger flex-grow" id="btn-manual-sell">
+                            <i class="fa-solid fa-circle-arrow-down"></i> SELL (SHORT)
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <!-- Row 3: Active Strategies Table -->
+    <section class="panel glass">
+        <div class="panel-header">
+            <h2><i class="fa-solid fa-chart-bar"></i> Active Algorithms Runs</h2>
+            <button class="btn btn-danger btn-sm" id="btn-emergency-kill">
+                <i class="fa-solid fa-skull"></i> Emergency Kill All
+            </button>
+        </div>
+        <div class="panel-body table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Run ID</th>
+                        <th>Algorithm</th>
+                        <th>Symbol</th>
+                        <th>Lot Size</th>
+                        <th>Net Position</th>
+                        <th>Realized P&L</th>
+                        <th>Unrealized P&L</th>
+                        <th>Logs</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="active-runs-table-body">
+                    <tr>
+                        <td colspan="9" class="empty-state">No automated strategies running currently.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Row 4: Positions and orders tables split -->
+    <div class="table-split">
+        <!-- Open Positions -->
+        <section class="panel glass">
+            <div class="panel-header">
+                <h2><i class="fa-solid fa-receipt"></i> Open Positions Book</h2>
+            </div>
+            <div class="panel-body table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Segment</th>
+                            <th>Qty</th>
+                            <th>Avg Cost</th>
+                            <th>Realized PnL</th>
+                            <th>Unrealized PnL</th>
+                        </tr>
+                    </thead>
+                    <tbody id="open-positions-table-body">
+                        <tr>
+                            <td colspan="6" class="empty-state">No open positions.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Orders log -->
+        <section class="panel glass">
+            <div class="panel-header">
+                <h2><i class="fa-solid fa-clock-rotate-left"></i> Today's Orders</h2>
+            </div>
+            <div class="panel-body table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Symbol</th>
+                            <th>Side</th>
+                            <th>Qty</th>
+                            <th>Trigger Price</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="todays-orders-table-body">
+                        <tr>
+                            <td colspan="6" class="empty-state">No orders registered today.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- Strategy Console logs modal -->
+<div class="modal-overlay" id="logs-modal" style="display: none;">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-terminal"></i> Strategy Console Stream (<span id="modal-run-id"></span>)</h2>
+            <button class="modal-close" id="btn-close-logs-modal">&times;</button>
+        </div>
+        <div class="modal-body console-body" id="console-logs-container">
+            <!-- Tail logs will render dynamically -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline-secondary" id="btn-clear-console">Clear Console</button>
+            <button class="btn btn-primary" id="btn-close-console">Close</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Main dashboard JavaScript controller -->
+<script src="{{ url_for('static', filename='js/trading.js') }}"></script>
+{% endblock %}

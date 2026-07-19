@@ -1,0 +1,16 @@
+Flask==3.0.0
+Flask-Session==0.5.0
+Flask-SocketIO==5.3.5
+SQLAlchemy==2.0.49
+pandas==2.2.3
+python-dotenv==1.0.0
+pytz==2023.3
+requests==2.32.3
+websocket-client==1.8.0
+simple-websocket==1.1.0
+pytest==8.4.2
+pytest-timeout==2.4.0
+PyYAML==6.0.3
+colorlog==6.8.0
+colorama==0.4.6
+git+https://github.com/Kotak-Neo/Kotak-neo-api-v2.git@8cee5bda63bd9334f8501bb23b7f1d2945f93397#egg=neo-api-client

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Authenticate | Neo Algo{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <div class="lock-icon-container">
+                <i class="fa-solid fa-shield-halved lock-icon"></i>
+            </div>
+            <h2>Broker Authorization</h2>
+            <p>Enter the manual 6-digit TOTP code from your Google or Microsoft Authenticator app to begin your trading session.</p>
+        </div>
+        
+        <form class="login-form" id="login-form">
+            <div class="form-group">
+                <label for="totp_code">TOTP Security Code</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-key input-icon"></i>
+                    <input type="text" id="totp_code" name="totp_code" required 
+                           placeholder="e.g. 123456" maxlength="6" autocomplete="off"
+                           pattern="[0-9]{6}" inputmode="numeric">
+                </div>
+                <small class="form-help">MPIN, UCC, and Client Keys will load automatically from secure environment configurations.</small>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-login-submit">
+                <span>Verify & Establish Session</span>
+                <i class="fa-solid fa-chevron-right btn-arrow"></i>
+            </button>
+        </form>
+        
+        <div class="login-error-alert" id="login-error-alert" style="display: none;">
+            <i class="fa-solid fa-circle-exclamation error-icon"></i>
+            <span id="login-error-message"></span>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+{% endblock %}

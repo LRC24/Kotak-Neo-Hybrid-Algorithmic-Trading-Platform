@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+.venv-audit/
+
+# Unit test / coverage reports
+.pytest_cache/
+.coverage
+.coverage.*
+.cache
+htmlcov/
+tests/tmp/
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Project Specific database and logs
+database/*.db
+database/*.db-journal
+database/*.db-shm
+database/*.db-wal
+logs/*.log
+flask_sessions/
+scrip_data/
+
+# Private release documentation
+RELEASE_NOTES_FOR_ME.md

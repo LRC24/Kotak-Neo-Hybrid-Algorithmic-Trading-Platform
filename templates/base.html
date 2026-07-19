@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Algo Kotak Neo Trader{% endblock %}</title>
+    
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Socket.IO Client -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Navigation bar -->
+        <nav class="main-navbar">
+            <div class="nav-brand">
+                <i class="fa-solid fa-microchip nav-brand-icon"></i>
+                <span class="nav-brand-text">NEO <span class="brand-accent">ALGO</span></span>
+            </div>
+            
+            <div class="nav-status">
+                <div class="status-indicator">
+                    <span class="status-dot disconnected" id="socket-status-dot"></span>
+                    <span class="status-text" id="socket-status-text">Connecting...</span>
+                </div>
+                {% if session.get('logged_in') %}
+                <button class="btn btn-outline-danger btn-sm" id="btn-global-logout">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+                {% endif %}
+            </div>
+        </nav>
+        
+        <!-- Alerts container for system warnings -->
+        <div class="alerts-container" id="alerts-container"></div>
+        
+        <!-- Main content block -->
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+        
+        <footer class="main-footer">
+            <span>Algo Kotak Neo Trader v2.0 &copy; 2026. Thread-safe Parallel Engine.</span>
+        </footer>
+    </div>
+    
+    <!-- Global JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
