@@ -4,7 +4,7 @@ A self-contained Python Flask and SQLite-based trading platform that integrates 
 
 ---
 
-## 🖥️ UI/UX Platform Gallery
+## UI/UX Platform Gallery
 
 The platform features a modern, responsive, glassmorphic dark-theme UI designed to keep active traders aware of account health and algorithmic statuses at all times.
 
@@ -26,7 +26,7 @@ Warns the user and pauses algorithmic strategies immediately if market data feed
 
 ---
 
-## 📈 Platform Architecture & Data Flow
+## Platform Architecture & Data Flow
 
 Below is the detailed data pipeline showing how live WebSocket ticks are parsed, logged, and routed to trigger automated trade execution, alongside the risk protection filters:
 
@@ -78,7 +78,7 @@ sequenceDiagram
 
 ---
 
-## 🛠️ Features
+## Features
 
 *   **Dual Mode Execution**: Execute manual orders on options/stocks and run concurrent algorithmic strategy threads (e.g., Exponential Moving Average crossover).
 *   **Real-time WebSocket Pipeline**: Subscribes dynamically to instrument tokens and pipes low-latency market ticks straight to running strategy buffers.
@@ -89,7 +89,7 @@ sequenceDiagram
 
 ---
 
-## 💻 Tech Stack
+## Tech Stack
 
 *   **Core Language**: Python 3.13+
 *   **Web Framework**: Flask 3.0, Flask-Session, Flask-SocketIO (WebSocket logging)
@@ -99,7 +99,7 @@ sequenceDiagram
 
 ---
 
-## 🚀 Quickstart
+## Quickstart
 
 ### 1. Prerequisites
 Ensure you have Python 3.13+ and Git installed on your system.
@@ -159,7 +159,7 @@ docker run -d -p 5000:5000 --env-file .env --name trading-platform kotak-neo-tra
 
 ---
 
-## 📈 Usage Example
+## Usage Example
 
 ### Starting a Strategy
 1.  Navigate to the web dashboard and log in.
@@ -173,7 +173,7 @@ docker run -d -p 5000:5000 --env-file .env --name trading-platform kotak-neo-tra
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 kotak-neo-algo-trader/
@@ -198,7 +198,7 @@ kotak-neo-algo-trader/
 
 ---
 
-## ⚠️ Limitations & Roadmap
+## Limitations & Roadmap
 
 *   **Mock Execution Testing**: While the WebSocket flow is fully integrated, the platform operates in simulated paper trading mode if Kotak API keys are omitted in `.env`.
 *   **Dynamic Options Parsing**: Currently resolves NSE Derivatives (F&O) and Capital Markets (CM) scrips; support for Currency derivatives is planned.
@@ -206,7 +206,7 @@ kotak-neo-algo-trader/
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
